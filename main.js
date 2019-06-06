@@ -15,12 +15,10 @@ const getData = url => {
       if (requisicao.status === 200) {
         const resposta = JSON.parse(requisicao.responseText)
         resolve(resposta)
-      } else{
-        reject("CEP invalido")
-      }
+      } 
     }
     requisicao.onerror = () => {
-      reject("Erro de conexão")
+      reject("CEP inválido")
     }
     requisicao.send()
 
@@ -29,18 +27,29 @@ const getData = url => {
 
 cepInput.addEventListener("blur", () => {
   const valorDoCampo = cepInput.value
-  getData(`https://viacep.com.br/ws/${valorDoCampo}/json/`)
-  .then(resultadoAPI => {
-    cepInput.value = resultadoAPI.cep
-    logradouroInput.value = resultadoAPI.logradouro
-    complementoInput.value = resultadoAPI.complemento
-    bairroInput.value = resultadoAPI.bairro
-    localidadeInput.value = resultadoAPI.localidade
-    ufInput.value = resultadoAPI.uf
-  })
-  .catch(erro => {
-    console.log({erro})
+  if (valorDoCampo) {
+    getData(`https://viacep.com.br/ws/${valorDoCampo}/json/`)
+      .then(resultadoAPI => {
+        cepInput.classList.remove("error")
+        cepError.innerHTML = ""
+        cepInput.value = resultadoAPI.cep
+        logradouroInput.value = resultadoAPI.logradouro
+        complementoInput.value = resultadoAPI.complemento
+        bairroInput.value = resultadoAPI.bairro
+        localidadeInput.value = resultadoAPI.localidade
+        ufInput.value = resultadoAPI.uf
+      })
+      .catch(erro => {
+        cepInput.classList.add("error")
+        cepError.innerHTML = erro
+        logradouroInput.value = ""
+        complementoInput.value = ""
+        bairroInput.value = ""
+        localidadeInput.value = ""
+        ufInput.value = ""
+      })
+  } else {
     cepInput.classList.add("error")
-    cepError.innerHTML = erro
-  })
+    cepError.innerHTML = "Campo obrigatório"
+  }
 })
