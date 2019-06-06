@@ -1,4 +1,9 @@
 const cepInput = document.getElementById("cep")
+const logradouroInput = document.getElementById("logradouro")
+const complementoInput = document.getElementById("complemento")
+const bairroInput = document.getElementById("bairro")
+const localidadeInput = document.getElementById("localidade")
+const ufInput = document.getElementById("uf")
 
 const exibeResultado = objeto => {
   let endereco = `
@@ -16,19 +21,26 @@ const exibeResultado = objeto => {
 }
 
 const getData = url => {
-  const requisicao = new XMLHttpRequest()
-  requisicao.open("GET", url)
-  requisicao.onload = function(){
-    if(requisicao.status === 200){
-      const resposta = JSON.parse(requisicao.responseText)
-       exibeResultado(resposta)
+  // return new Promise((resolve, reject) => {
+
+    const requisicao = new XMLHttpRequest()
+    requisicao.open("GET", url)
+    requisicao.onload = function () {
+      if (requisicao.status === 200) {
+        const resposta = JSON.parse(requisicao.responseText)
+        return resposta
+      }
     }
-  }
-  requisicao.send()
+    requisicao.send()
+
+  // })
 }
 
 cepInput.addEventListener("blur", () => {
   const valorDoCampo = cepInput.value
-  const resultadoAPI = getData(`https://viacep.com.br/ws/${valorDoCampo}/json/`)
-  console.log(resultadoAPI)
+  getData(`https://viacep.com.br/ws/${valorDoCampo}/json/`)
+  .then(resultadoDaAPI => {
+    cepInput.value = resultadoAPI.cep
+    logradouroInput.value = resultadoAPI.logradouro
+  })
 })
