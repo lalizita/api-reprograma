@@ -21,25 +21,25 @@ const exibeResultado = objeto => {
 }
 
 const getData = url => {
-  // return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
 
     const requisicao = new XMLHttpRequest()
     requisicao.open("GET", url)
     requisicao.onload = function () {
       if (requisicao.status === 200) {
         const resposta = JSON.parse(requisicao.responseText)
-        return resposta
+        resolve(resposta)
       }
     }
     requisicao.send()
 
-  // })
+  })
 }
 
 cepInput.addEventListener("blur", () => {
   const valorDoCampo = cepInput.value
   getData(`https://viacep.com.br/ws/${valorDoCampo}/json/`)
-  .then(resultadoDaAPI => {
+  .then(resultadoAPI => {
     cepInput.value = resultadoAPI.cep
     logradouroInput.value = resultadoAPI.logradouro
   })
