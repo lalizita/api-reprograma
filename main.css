@@ -29,7 +29,6 @@ form #cep-error {
   margin-top: 5px;
   font-size: 12px;
   color: red;
-  display: none;
 }
 
 form input{
